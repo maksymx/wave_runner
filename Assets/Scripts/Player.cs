@@ -6,6 +6,7 @@ using UnityEngine;
 public class Player:MonoBehaviour {
 
     public GameObject deadEffectObj;
+    public GameObject itemEffectObj;
 
     Rigidbody2D rb;
     float angle = 0;
@@ -58,13 +59,19 @@ public class Player:MonoBehaviour {
 
 
     void OnTriggerEnter2D(Collider2D other) {
-        if (other.gameObject.tag == "Obstacle"){
+        if (other.gameObject.tag == "Obstacle") {
             Dead();
         }
-        else if(other.gameObject.tag == "Item") {
-            Debug.Log("Score +1");
-            gameManager.AddScore();
+        else if (other.gameObject.tag == "Item") {
+            GetItem(other);
         }
+    }
+
+    void GetItem(Collider2D other) {
+        Debug.Log("Score +1");
+        Destroy(Instantiate(itemEffectObj, other.gameObject.transform.position, Quaternion.identity), 0.5f);
+        Destroy(other.gameObject.transform.parent.gameObject);
+        gameManager.AddScore();
     }
 
     void Dead() {
