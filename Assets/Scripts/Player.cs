@@ -17,6 +17,8 @@ public class Player:MonoBehaviour {
 
     bool isDead = false;
 
+    float hueValue;
+
     void Awake() {
         rb = GetComponent < Rigidbody2D > ();
         gameManager = GameObject.Find("GameManager").GetComponent < GameManager > ();
@@ -24,7 +26,8 @@ public class Player:MonoBehaviour {
 
     // Use this for initialization
     void Start() {
-
+        hueValue = Random.Range(0, 10) / 10.0f;
+        SetBackgroudColor();
     }
 
     // Update is called once per frame
@@ -57,7 +60,6 @@ public class Player:MonoBehaviour {
         }
     }
 
-
     void OnTriggerEnter2D(Collider2D other) {
         if (other.gameObject.tag == "Obstacle") {
             Dead();
@@ -68,6 +70,7 @@ public class Player:MonoBehaviour {
     }
 
     void GetItem(Collider2D other) {
+        SetBackgroudColor();
         Debug.Log("Score +1");
         Destroy(Instantiate(itemEffectObj, other.gameObject.transform.position, Quaternion.identity), 0.5f);
         Destroy(other.gameObject.transform.parent.gameObject);
@@ -76,7 +79,6 @@ public class Player:MonoBehaviour {
 
     void Dead() {
         isDead = true;
-
         Destroy(Instantiate(deadEffectObj, transform.position, Quaternion.identity), 0.5f);
         StopPlayer();
         gameManager.CallGameOver();
@@ -85,5 +87,13 @@ public class Player:MonoBehaviour {
     void StopPlayer() {
         rb.velocity = Vector2.zero;
         rb.isKinematic = true;
+    }
+
+    void SetBackgroudColor(){
+        Camera.main.backgroundColor = Color.HSVToRGB(hueValue, 0.6f, 0.8f);
+        hueValue += 0.1f;
+        if (hueValue > 1){
+            hueValue = 0.0f;
+        }
     }
 }
